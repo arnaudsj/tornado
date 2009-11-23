@@ -44,8 +44,11 @@ class HTTPClient(object):
     fetch() can take a string URL or an HTTPRequest instance, which offers
     more options, like executing POST/PUT/DELETE requests.
     """
-    def __init__(self, max_simultaneous_connections=None):
-        self._curl = _curl_create(max_simultaneous_connections)
+    def __init__(self, max_simultaneous_connections=None,
+                       proxy_host=None, proxy_port=None,
+                       proxy_username=None, proxy_password=None):
+        self._curl = _curl_create(max_simultaneous_connections, proxy_host,
+                                  proxy_port, proxy_username, proxy_password)
 
     def __del__(self):
         self._curl.close()
@@ -103,7 +106,9 @@ class AsyncHTTPClient(object):
     _ASYNC_CLIENTS = {}
 
     def __new__(cls, io_loop=None, max_clients=10,
-                max_simultaneous_connections=None):
+                max_simultaneous_connections=None, 
+                proxy_host=None, proxy_port=None,
+                proxy_username=None, proxy_password=None):
         # There is one client per IOLoop since they share curl instances
         io_loop = io_loop or ioloop.IOLoop.instance()
         if id(io_loop) in cls._ASYNC_CLIENTS:
@@ -112,7 +117,9 @@ class AsyncHTTPClient(object):
             instance = super(AsyncHTTPClient, cls).__new__(cls)
             instance.io_loop = io_loop
             instance._multi = pycurl.CurlMulti()
-            instance._curls = [_curl_create(max_simultaneous_connections)
+            instance._curls = [_curl_create(max_simultaneous_connections,
+                               proxy_host, proxy_port, 
+                               proxy_username, proxy_password)
                                for i in xrange(max_clients)]
             instance._free_list = instance._curls[:]
             instance._requests = collections.deque()
@@ -321,12 +328,19 @@ class CurlError(HTTPError):
         self.errno = errno
 
 
-def _curl_create(max_simultaneous_connections=None):
+def _curl_create(max_simultaneous_connections=None, proxy_host=None, 
+    proxy_port=None, proxy_username=None, proxy_password=None):
     curl = pycurl.Curl()
     if logging.getLogger().isEnabledFor(logging.DEBUG):
         curl.setopt(pycurl.VERBOSE, 1)
         curl.setopt(pycurl.DEBUGFUNCTION, _curl_debug)
     curl.setopt(pycurl.MAXCONNECTS, max_simultaneous_connections or 5)
+    if not (proxy_host==None and proxy_port==None):
+        curl.setopt(pycurl.PROXY, proxy_host)
+        curl.setopt(pycurl.PROXYPORT, proxy_port)
+        if proxy_username is not None:
+            curl.setopt(pycurl.PROXYUSERPWD, "%s:%s" % (
+                proxy_username, proxy_password))
     return curl
 
 
