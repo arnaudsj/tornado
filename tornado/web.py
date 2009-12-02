@@ -158,7 +158,7 @@ class RequestHandler(object):
         self._headers[name] = value
 
     _ARG_DEFAULT = []
-    def get_argument(self, name, default=_ARG_DEFAULT, strip=True):
+    def get_argument(self, name, default=_ARG_DEFAULT, strip=True, unicode=True):
         """Returns the value of the argument with the given name.
 
         If default is not provided, the argument is considered to be
@@ -173,7 +173,8 @@ class RequestHandler(object):
             return default
         # Get rid of any weird control chars
         value = re.sub(r"[\x00-\x08\x0e-\x1f]", " ", values[-1])
-        value = _unicode(value)
+        if unicode==True:
+            value = _unicode(value)
         if strip: value = value.strip()
         return value
 
