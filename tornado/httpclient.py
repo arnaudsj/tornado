@@ -348,6 +348,9 @@ def _curl_setup_request(curl, request, buffer, headers):
     curl.setopt(pycurl.URL, request.url)
     curl.setopt(pycurl.HTTPHEADER,
                 ["%s: %s" % i for i in request.headers.iteritems()])
+                
+    curl.setopt(pycurl.SSL_VERIFYPEER, 0)
+    curl.setopt(pycurl.SSL_VERIFYHOST, 0)
     try:
         curl.setopt(pycurl.HEADERFUNCTION,
                     functools.partial(_curl_header_callback, headers))
