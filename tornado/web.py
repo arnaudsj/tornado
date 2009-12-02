@@ -1212,7 +1212,7 @@ def _utf8(s):
 def _unicode(s):
     if isinstance(s, str):
         try:
-            return s.decode("utf-8")
+            return unicode(s, errors='ignore')
         except UnicodeDecodeError:
             raise HTTPError(400, "Non-utf8 argument")
     assert isinstance(s, unicode)
