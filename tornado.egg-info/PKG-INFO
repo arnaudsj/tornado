@@ -1,0 +1,18 @@
+Metadata-Version: 1.0
+Name: tornado
+Version: 0.2
+Summary: Tornado is a fast, scalable and non-blocking python web server
+Home-page: http://www.tornadoweb.org/
+Author: Facebook
+Author-email: python-tornado@googlegroups.com
+License: Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0>
+Description: 
+        Tornado is an open source version of the scalable, non-blocking web server and and tools that power FriendFeed
+        
+Keywords: networking web server nonblocking asynchronous python epoll
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0>
+Classifier: Programming Language :: Python
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Internet
