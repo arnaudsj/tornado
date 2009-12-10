@@ -67,6 +67,7 @@ import types
 import urllib
 import urlparse
 import uuid
+from xml.sax import saxutils
 
 
 class RequestHandler(object):
@@ -158,7 +159,7 @@ class RequestHandler(object):
         self._headers[name] = value
 
     _ARG_DEFAULT = []
-    def get_argument(self, name, default=_ARG_DEFAULT, strip=True, unicode=True):
+    def get_argument(self, name, default=_ARG_DEFAULT, strip=True, unicode=True, sax_utf8_decode=False):
         """Returns the value of the argument with the given name.
 
         If default is not provided, the argument is considered to be
@@ -175,6 +176,8 @@ class RequestHandler(object):
         value = re.sub(r"[\x00-\x08\x0e-\x1f]", " ", values[-1])
         if unicode==True:
             value = _unicode(value)
+        elif sax_utf8_decode==True:
+            value = saxutils.escape(value).decode('utf-8','ignore')
         if strip: value = value.strip()
         return value
 
