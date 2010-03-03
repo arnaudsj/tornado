@@ -41,7 +41,7 @@ class Connection(object):
     We explicitly set the timezone to UTC and the character encoding to
     UTF-8 on all connections to avoid time zone and encoding errors.
     """
-    def __init__(self, host, database, user=None, password=None, charset='utf-8'):
+    def __init__(self, host, database, user=None, password=None, charset='utf8'):
         self.host = host
         self.database = database
 
