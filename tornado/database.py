@@ -41,12 +41,16 @@ class Connection(object):
     We explicitly set the timezone to UTC and the character encoding to
     UTF-8 on all connections to avoid time zone and encoding errors.
     """
-    def __init__(self, host, database, user=None, password=None):
+    def __init__(self, host, database, user=None, password=None, charset='utf-8'):
         self.host = host
         self.database = database
 
-        args = dict(conv=CONVERSIONS, use_unicode=True, charset="utf8",
+        if charset != None:
+            args = dict(conv=CONVERSIONS, use_unicode=True, charset=charset,
                     db=database, init_command='SET time_zone = "+0:00"',
+                    sql_mode="TRADITIONAL")            
+        else:
+            args = dict(conv=CONVERSIONS, db=database, init_command='SET time_zone = "+0:00"',
                     sql_mode="TRADITIONAL")
         if user is not None:
             args["user"] = user
